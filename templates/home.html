@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% if note %}Note {{ note.id }}{% else %}Cyberlab{% endif %}</title>
+</head>
+<body>
+{% if note %}
+    <h1>{{ note.title }}</h1>
+    <p>Owner: {{ note.owner }}</p>
+    <p>Private: {{ note.is_private }}</p>
+    <div>Content: {{ note.body }}</div>
+    <p>This page is intentionally missing an ownership check for A01.</p>
+    <a href="{% url 'src:home' %}">Back to home</a>
+{% else %}
+    <h1>Cyberlab: OWASP A01, A02, A03, A05, A07:2021</h1>
+    <a href="{% url 'src:insecure-login' %}?username=Topias&password=topias-password">login as Topias</a>
+
+    {% for flaw in flaws %}
+        <h2>{{ flaw.category }} — {{ flaw.name }}</h2>
+        <p>{{ flaw.description }}</p>
+
+        {% if flaw.category == "A01" %}
+            <a href="{% url 'src:insecure-note-detail' 1 %}">Open note 1</a>
+        {% elif flaw.category == "A02" %}
+            <a href="{% url flaw.url %}">Expose credentials</a>
+        {% elif flaw.category == "A03" %}
+            <form action="{% url flaw.url %}" method="get">
+                <label>Search <input name="q" value="note"></label>
+                <button type="submit">Search</button>
+            </form>
+        {% elif flaw.category == "A05" %}
+            <a href="/not-a-real-route/">Not a real route</a>
+        {% elif flaw.category == "A07" %}
+            <a href="{% url flaw.url %}?username=Topias&password=wrong">Login without password</a>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+</body>
+</html>
