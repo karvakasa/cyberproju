@@ -121,7 +121,7 @@ def insecure_login(request):
     credential_exists = Credential.objects.filter(username=username).exists()
 
     # A07 vulnerable baseline: `supplied_password` is deliberately ignored.
-    """ if not credential_exists:
+    if not credential_exists:
         return JsonResponse({"authenticated": False}, status=401)
     request.session["user"] = username
     return JsonResponse(
@@ -130,7 +130,7 @@ def insecure_login(request):
             "username": username,
             "password_was_checked": bool(supplied_password) and False,
         }
-    ) """
+    )
 
     # Fixed version: validate the supplied password with Django's password hasher
     # Fix version checks the password and returns error if not correct
